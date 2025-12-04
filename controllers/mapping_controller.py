@@ -1,11 +1,11 @@
 from flask import Blueprint, request, jsonify, session
 from models.mappings import MAPPINGS
-from services.db_service import get_dummy_data_from_db
+  # wherever your mapping dictionary lives
+
 mapping = Blueprint("mapping", __name__)
-print("MAPPING BLUEPRINT LOADED")
 
 @mapping.route("/get_mappings", methods=["POST"])
-def get_map():
+def get_mappings():
     if "user" not in session:
         return jsonify({"error": "Unauthorized"}), 401
 
@@ -14,23 +14,14 @@ def get_map():
     entity = data.get("entity")
     product = data.get("product")
 
+    if not (country and entity and product):
+        return jsonify({"error": "Missing fields"}), 400
+
     try:
         result = MAPPINGS[country][entity][product]
-        return jsonify(result)
-    except:
-        return jsonify({"error": "Invalid combination"}), 400
-@mapping.route("/get_countries", methods=["GET"]) # written to get list of countries
-def get_countries():
-    if "user" not in session:
-        return jsonify({"error": "Unauthorized"}), 401
-
-    countries = list(MAPPINGS.keys())
-    return jsonify(countries)
-
-#route to get entities for a given country
-
-
-@mapping.route("/get_dummy_data", methods=["GET"])
-def get_dummy():
-    data = get_dummy_data_from_db()
-    return jsonify(data), 200
+        return jsonify({
+            "docs": list(set(result["docs"])),
+            "compliance": list(set(result["compliance"]))
+        })
+    except KeyError:
+        return jsonify({"error": "Invalid selection"}), 400
