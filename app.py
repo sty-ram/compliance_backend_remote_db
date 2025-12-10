@@ -5,10 +5,11 @@ from flask_cors import CORS
 from controllers.auth_controller import auth
 from controllers.mapping_controller import mapping
 from controllers.image_controller import images
-
+import os
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key"
+app.secret_key = os.getenv("FLASK_SECRET")
+
 print("APP INSTANCE:", id(app))
 
 # GLOBAL CORS FIX – Applies to all routes

@@ -4,9 +4,12 @@ from models.mappings import MAPPINGS
 
 mapping = Blueprint("mapping", __name__)
 
+# 
+# GET ALL MAPPINGS for new db 
 @mapping.route("/get_mappings", methods=["POST"])
 def get_mappings():
-    if "user" not in session:
+    # FIX HERE
+    if "username" not in session:
         return jsonify({"error": "Unauthorized"}), 401
 
     data = request.get_json()
