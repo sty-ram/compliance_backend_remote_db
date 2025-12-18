@@ -20,6 +20,10 @@ app.register_blueprint(auth)
 app.register_blueprint(mapping)
 app.register_blueprint(images)
 
+# --- HEALTH ENDPOINT ---
+@app.route("/health", methods=["GET"])
+def health():
+    return {"status": "ok"}, 200
 if __name__ == "__main__":
     @app.after_request
 
@@ -28,5 +32,5 @@ if __name__ == "__main__":
         print("CORS HEADER:", response.headers.get("Access-Control-Allow-Origin"))
         return response
 
-    app.run(port=5000, debug=True)
+    app.run(host="0.0.0.0", port=6100, debug=True)
     
